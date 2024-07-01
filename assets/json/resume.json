@@ -30,27 +30,24 @@
   "education": [
     {
       "institution": "Loughborough University",
-      "location": "Loughborough, United Kingdom",
       "url": "https://www.lboro.ac.uk/",
       "area": "Cyber Security and Data Analytics",
-      "studyType": "MSc",
+      "studyType": "Masters of Science",
       "startDate": "2023-10",
       "endDate": "2024-09",
       "score": "Distinction: 87% Average Currently"
     },
     {
       "institution": "University of Warwick",
-      "location": "Coventry, Warwickshire, United Kingdom",
       "url": "https://warwick.ac.uk/",
       "area": "Discrete Mathematics",
-      "studyType": "BSc",
+      "studyType": "Bachelors of Science",
       "startDate": "2020-09",
       "endDate": "2023-07",
       "score": "Second Class Honours: Lower Division"
     },
     {
       "institution": "Aylesbury Grammar School",
-      "location": "Aylesbury, Buckinghamshire, United Kingdom",
       "url": "https://www.ags.bucks.sch.uk/",
       "area": "Mathematics, Further Mathematics, Chemistry, Computer Science",
       "studyType": "A-Levels",
