@@ -1,81 +1,46 @@
 ---
 layout: page
-title: project 1
-description: with background image
-img: assets/img/12.jpg
+title: SMBv3 NTLM Cracking
+description: Cracking NTLM hashes from SMBv3 communications
+img: assets/img/decrypted.png
 importance: 1
 category: work
 related_publications: true
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+Python project to automate the creation and subsequent cracking of NTLMv2 hashes from an SMBv3 session. Full code can be found on
+[GitHub]https://github.com/Denrogh/SMB3NTLMCrack.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+Basic program procedure is 
+    Step 1 - Open pcap file and extract needed fields
+    Step 2 - Get password hash and load into hashcat to crack
+    Step 3 - Exit out if hash not found in reasonable time, if hash found - generate secret key
+    Step 4 - Return secret key and instructions on how to decrypt within Wireshark.
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+The cracking of the hash allows for generation of the secret key used in communication between the two parties and the decryption of any captured session.
+Some code can be seen below
+'''python
+def extract_packets(pcap):
+    #Create a filter to only collect the important smb3 packets for calculating the Random Session Key
+    capture = pyshark.FileCapture(pcap, display_filter="ntlmssp.messagetype == 2")
+    for packet in capture:
+        #print(packet.smb2.ntlmssp_ntlmserverchallenge)
+        ntlm_challenge = packet.smb2.ntlmssp_ntlmserverchallenge.replace(':', '')
+    # Close the capture
+    capture.close()
 
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
-</div>
-
-You can also put regular text between your rows of images, even citations {% cite einstein1950meaning %}.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
-
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
-</div>
-
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
-
-{% raw %}
-
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
-
-{% endraw %}
+    capture = pyshark.FileCapture(pcap, display_filter="ntlmssp.messagetype == 3")
+    for packet in capture:
+	#Issues with endianess make this code more complex than need be
+        ba = bytearray.fromhex(packet.smb2.sesid.raw_value)
+        print("Session ID = " + (''.join(format(x, '02x') for x in ba)))
+        #Extracting necessary fields for NTLM hash.
+        username = packet.smb2.ntlmssp_auth_username.replace(':', '')
+        domain = packet.smb2.ntlmssp_auth_domain.replace(':', '')
+        sesskey = packet.smb2.ntlmssp_auth_sesskey.replace(':', '')
+        ntProofStr = packet.smb2.ntlmssp_ntlmv2_response_ntproofstr.replace(':', '')
+        ntlmv2response = packet.smb2.ntlmssp_ntlmv2_response.replace(':', '')
+    # Close the capture
+    capture.close()
+    smb3session = SMB3Session(domain, username, sesskey, ntlm_challenge, ntProofStr, ntlmv2response)
+    return smb3session'''
