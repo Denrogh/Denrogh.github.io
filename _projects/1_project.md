@@ -28,6 +28,7 @@ Python project to automate the creation and subsequent cracking of NTLMv2 hashes
 [github]https://github.com/Denrogh/SMB3NTLMCrack.
 
 Basic program procedure is 
+
     1. Open pcap file and extract needed fields
     2. Get password hash and load into hashcat to crack
     3. Exit out if hash not found in reasonable time, if hash found - generate secret key
