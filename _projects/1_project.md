@@ -20,7 +20,7 @@ github_link_hover_text: View Code
 github_link_hover_icon_color: "#000000"
 author: Denrogh
 importance: 1
-category: work
+category: cryptography
 related_publications: true
 ---
 
@@ -62,3 +62,9 @@ Some code can be seen below
     smb3session = SMB3Session(domain, username, sesskey, ntlm_challenge, ntProofStr, ntlmv2response)
     return smb3session
 ```
+
+After packet extract and key generation, we grab the secret key and can input it into Wireshark, giving us the decrypted SMB session allowing for full view of the exchange alongside any files retrived.
+![Decrypted SMB3 Session Image](./assets/img/decrypted.PNG "Decrypted SMB3 Session")
+
+
+
