@@ -64,7 +64,7 @@ Some code can be seen below
 ```
 
 After packet extract and key generation, we grab the secret key and can input it into Wireshark, giving us the decrypted SMB session allowing for full view of the exchange alongside any files retrived.
-![Decrypted SMB3 Session Image](./assets/img/decrypted.PNG "Decrypted SMB3 Session")
+![Decrypted SMB3 Session Image](./../assets/img/decrypted.PNG "Decrypted SMB3 Session")
 
 
 
