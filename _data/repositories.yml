@@ -4,5 +4,5 @@ github_users:
 repo_description_lines_max: 2
 
 github_repos:
-  - SMB3NTLMCrack/Denrogh
-  - GCA-Cowrie-Honeypots/Denrogh
+  - Denrogh/SMB3NTLMCrack
+  - Denrogh/GCA-Cowrie-Honeypots
